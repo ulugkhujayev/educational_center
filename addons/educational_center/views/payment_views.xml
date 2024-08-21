@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_payment_form" model="ir.ui.view">
+        <field name="name">educational_center.payment.form</field>
+        <field name="model">educational_center.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" states="confirmed"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="student_id"/>
+                        <field name="amount"/>
+                        <field name="date"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_payment_tree" model="ir.ui.view">
+        <field name="name">educational_center.payment.tree</field>
+        <field name="model">educational_center.payment</field>
+        <field name="arch" type="xml">
+	<tree>
+                <field name="student_id"/>
+                <field name="amount"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_payment_search" model="ir.ui.view">
+        <field name="name">educational_center.payment.search</field>
+        <field name="model">educational_center.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="date"/>
+                <field name="state"/>
+                <filter string="Last Week" name="last_week" domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Student" name="group_by_student" context="{'group_by': 'student_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_payment_graph" model="ir.ui.view">
+        <field name="name">educational_center.payment.graph</field>
+        <field name="model">educational_center.payment</field>
+        <field name="arch" type="xml">
+            <graph string="Payments Analysis" type="bar">
+                <field name="date" interval="day"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_payment" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">educational_center.payment</field>
+        <field name="view_mode">tree,form,graph</field>
+    </record>
+
+    <menuitem id="menu_payment" name="Payments" action="action_payment" parent="menu_educational_center" sequence="50"/>
+</odoo>
