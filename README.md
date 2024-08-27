@@ -29,3 +29,8 @@ The Odoo Educational Center is a comprehensive application designed to automate 
 3. Manage courses, teachers, students, and payments according to your user role and permissions.
 4. Administrators can view the payment reports and charts.
 5. Teachers can view and accept payments for their assigned groups.
+
+
+## Testing
+    Run tests:
+`docker-compose run --rm web odoo -c /etc/odoo/odoo.conf -d postgres --test-enable --stop-after-init -i educational_center`     
