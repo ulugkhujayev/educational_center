@@ -1,5 +1,7 @@
 from odoo import models, fields, api
 from datetime import datetime, timedelta
+from odoo.exceptions import ValidationError
+
 
 
 class Payment(models.Model):
@@ -24,6 +26,11 @@ class Payment(models.Model):
     is_recent = fields.Boolean(
         string="Is Recent", compute="_compute_is_recent", store=True
     )
+    @api.constrains('amount')
+    def _check_amount(self):
+        for record in self:
+            if record.amount <= 0:
+                raise ValidationError("Payment amount must be positive.")
 
     @api.depends("create_date")
     def _compute_is_recent(self):
@@ -39,5 +46,5 @@ class Payment(models.Model):
 
     @api.model
     def get_last_week_payments(self):
-        last_week = datetime.now() - timedelta(days=7)
-        return self.search([("date", ">=", last_week.date())])
+        last_week = fields.Date.today() - timedelta(days=7)
+        return self.search([('date', '>', last_week)])
